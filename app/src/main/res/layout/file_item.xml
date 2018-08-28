@@ -32,12 +32,35 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:gravity="right"
             android:layout_toRightOf="@id/thumb"
             android:text="date" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:background="#49e1e1e1">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rename"
+            android:padding="8dp"
+            android:background="#00000000"
+            android:src="@drawable/ic_edit_black_24dp"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/delete"
+            android:padding="8dp"
+            android:background="#00000000"
+            android:src="@drawable/ic_delete_black_24dp"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

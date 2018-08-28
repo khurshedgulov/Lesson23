@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int VCODE = 1;
     public static final int FCODE = 2;
 
-
+    // Перменные для хранения ссылок виджетов объявленных в файле макета
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -58,24 +58,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Получить ссылку виджета Toolbar, который необходим для замены стандартного тулбара
         toolbar = findViewById(R.id.toolbar);
+        // Установить в качестве системного тулбара, Toolbar объявленный в макете
         setSupportActionBar(toolbar);
+        // Установить заголовок для Activity, который показывается в Toolbar-e
         setTitle("Галерея");
 
+        // ViewPager - виджет для просмотра фрагментов в виде страниц переключаемых по свайпу
         viewPager = findViewById(R.id.viewpager);
+        // TabLayout - виджет для создания вкладок
         tabLayout = findViewById(R.id.tabs);
 
+        // Если нет необходимых розрешений, тогда запросить их
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // Если не дано разрешение на использование камеры, спросить разрешение и отправить код запроса
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{
                     Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, FCODE);
         } else {
+            // Если есть разрешеиня, вызвать функцию для настройки ViewPager-a и добавления необходимых фрагментов
             setupViewPager(viewPager);
+            // Функция для привязки ViewPager-a к TabLayout-у
             tabLayout.setupWithViewPager(viewPager);
         }
     }
 
+    // Функция для добавления фрагментов в ViewPager
     void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
@@ -94,8 +103,12 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
+
+    // Класс адаптера для ViewPager-a
     class ViewPagerAdapter extends FragmentPagerAdapter {
+        // Массив для хранения фрагментов (страниц)
         private final List<Fragment> mFragmentList = new ArrayList<>();
+        // Массив для хранения массива заголовков фрагментов дяя показа на вкладках
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
@@ -244,6 +257,13 @@ public class MainActivity extends AppCompatActivity {
         // Если возвращенный код равен коду запроса на снятие фото и код результата имеет статус RESULT_OK
         if (requestCode == RCODE && resultCode == RESULT_OK) {
             galleryAddMedia();
+
+            // Получить доступ к адаптеру и ...
+            ViewPagerAdapter adapter = (ViewPagerAdapter)viewPager.getAdapter();
+            // ... через адаптер получить доступ к фрагменту ...
+            MediaList f = (MediaList) adapter.getItem(viewPager.getCurrentItem());
+            // ... вызвать функцию обновления адаптера для фрагмента, для обновления списка и показа нового файла в списке
+            f.UpdateAdapter();
         }
         if (requestCode == RCODE && resultCode == RESULT_CANCELED) {
             File file = new File(mediaPath);
@@ -254,6 +274,9 @@ public class MainActivity extends AppCompatActivity {
         // Если возвращенный код равен коду запроса на снятие видео и код результата имеет статус RESULT_OK
         if (requestCode == VCODE && resultCode == RESULT_OK) {
             galleryAddMedia();
+            ViewPagerAdapter adapter = (ViewPagerAdapter)viewPager.getAdapter();
+            MediaList f = (MediaList) adapter.getItem(viewPager.getCurrentItem());
+            f.UpdateAdapter();
         }
     }
 
@@ -312,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
                         openVideo();
                     }
 
-                    // Если код запроса равен коду запроса транзакции фрагмента
+                    // Результат первоначального запроса для получения доступа к камере и файловой системе
                     if (requestCode == FCODE) {
                         setupViewPager(viewPager);
                         tabLayout.setupWithViewPager(viewPager);
